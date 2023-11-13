@@ -1,136 +1,57 @@
-import React, { useState } from "react";
-import Layout from "../layout/Layout";
-import "./Reports.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Layout from "../layout/Layout"; // Замените на правильный путь к Layout компоненте
 
 const Reports = () => {
-  const [employeeId, setEmployeeId] = useState("");
-  const [taskId, setTaskId] = useState("");
-  const [reportData, setReportData] = useState([]);
+  const [reportData, setReportData] = useState(null);
+  const [error, setError] = useState(null);
 
-  const dummyData = [
-    {
-      employeeId: "8",
-      taskCount: 2,
-      tasks: [
-        { id: 18, latitude: 45.063381, longitude: 38.919267 },
-        { id: 1, latitude: 45.019844, longitude: 39.003879 },
-      ],
-    },
-    {
-      employeeId: "9",
-      taskCount: 2,
-      tasks: [
-        { id: 20, latitude: 45.063381, longitude: 38.919267 },
-        { id: 3, latitude: 45.019844, longitude: 39.003879 },
-      ],
-    },
-    {
-      employeeId: "6",
-      taskCount: 2,
-      tasks: [
-        { id: 15, latitude: 45.063381, longitude: 38.919267 },
-        { id: 10, latitude: 45.019844, longitude: 39.003879 },
-        { id: 20, latitude: 45.063381, longitude: 38.919267 },
-        { id: 3, latitude: 45.019844, longitude: 39.003879 },
-      ],
-    },
-    {
-      employeeId: "11",
-      taskCount: 2,
-      tasks: [
-        { id: 5, latitude: 45.063381, longitude: 38.919267 },
-        { id: 4, latitude: 45.019844, longitude: 39.003879 },
-        { id: 20, latitude: 45.063381, longitude: 38.919267 },
-        { id: 3, latitude: 45.019844, longitude: 39.003879 },
-        { id: 20, latitude: 45.063381, longitude: 38.919267 },
-        { id: 3, latitude: 45.019844, longitude: 39.003879 },
-      ],
-    },
-    {
-      employeeId: "4",
-      taskCount: 2,
-      tasks: [
-        { id: 2, latitude: 45.063381, longitude: 38.919267 },
-        { id: 1, latitude: 45.019844, longitude: 39.003879 },
-      ],
-    },
-    // Другие данные для отчета
-  ];
+  useEffect(() => {
+    const login = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/login?username=manager&password=manager"
+        );
+        console.log("Login Response:", response); // Добавьте эту строку
+        const token = response.data; // Изменено
+        console.log("Token:", token); // Добавьте эту строку
 
-  const handleGenerateReport = () => {
-    const filteredData = dummyData.filter((item) => {
-      return (
-        (!employeeId || item.employeeId === employeeId) &&
-        (!taskId || item.tasks.some((task) => task.id.toString() === taskId))
-      );
-    });
+        const reportResponse = await axios.get("http://localhost:8080/report", {
+        params: { "token": token }, // Пробуйте явно указать ключ "token"
+        });
 
-    setReportData(
-      filteredData.map((item) => ({
-        employeeId: item.employeeId,
-        taskCount: item.tasks.length,
-        tasks: item.tasks.filter(
-          (task) => !taskId || task.id.toString() === taskId
-        ),
-      }))
-    );
-  };
+        const data = reportResponse.data;
+        console.log("Report Data:", data);
+        setReportData(data);
+      } catch (error) {
+        console.error("Ошибка при получении отчета:", error.message);
+        setError("Ошибка при получении отчета");
+      }
+    };
+
+    login();
+  }, []);
 
   return (
     <Layout>
-      <div className="page-content">
-        <h2>Отчеты</h2>
-        <div className="filters">
-          <label htmlFor="employeeId">ID сотрудника:</label>
-          <input
-            type="text"
-            id="employeeId"
-            placeholder="поиск по всем id"
-            value={employeeId}
-            onChange={(e) => setEmployeeId(e.target.value)}
-          />
-
-          <label htmlFor="taskId">ID задачи:</label>
-          <input
-            type="text"
-            id="taskId"
-            placeholder="поиск по всем id"
-            value={taskId}
-            onChange={(e) => setTaskId(e.target.value)}
-          />
-
-          <button onClick={handleGenerateReport}>Создать отчет</button>
+      <h1>Отчеты</h1>
+      {error && <p>{error}</p>}
+      {reportData && (
+        <div>
+          <h2>Отчет</h2>
+          <ul>
+            {reportData.map((item, index) => (
+              <li key={index}>
+                <strong>Сотрудник:</strong> {item.employee.name},{" "}
+                <strong>Среднее время в пути:</strong> {item.avgRoadTime},{" "}
+                <strong>Среднее время выполнения:</strong>{" "}
+                {item.avgCompletionTime},{" "}
+                <strong>Выполненные задачи:</strong> {item.completedTask}
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="report">
-          <h3>Сгенерированный отчет</h3>
-          {reportData.map((data, index) => (
-            <div key={index}>
-              <p>
-                ID сотрудника: {data.employeeId}, выполненных тасков:{" "}
-                {data.taskCount}
-              </p>
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID Таска</th>
-                    <th>Широта</th>
-                    <th>Долгота</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.tasks.map((task, taskIndex) => (
-                    <tr key={taskIndex}>
-                      <td>{task.id}</td>
-                      <td>{task.latitude}</td>
-                      <td>{task.longitude}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))}
-        </div>
-      </div>
+      )}
     </Layout>
   );
 };

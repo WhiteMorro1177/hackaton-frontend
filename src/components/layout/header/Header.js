@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "./Logo";
-import Hamburger from "./Hamburger";
+//import Hamburger from "./Hamburger";
 
 import "./Header.css";
 import Pages from "./Pages";
