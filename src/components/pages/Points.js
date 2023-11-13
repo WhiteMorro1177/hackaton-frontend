@@ -11,11 +11,11 @@ const Points = () => {
     const login = async () => {
       try {
         const loginResponse = await axios.post(
-          "http://localhost:8080/login?username=manager&password=manager"
+          "http://localhost:8081/login?username=manager&password=manager"
         );
         const token = loginResponse.data;
 
-        const response = await axios.get("http://localhost:8080/business_points", {
+        const response = await axios.get("http://localhost:8081/business_points", {
           params: { token },
         });
         setPoints(response.data);
