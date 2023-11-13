@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Layout from "../layout/Layout"; // Замените на правильный путь к Layout компоненте
+import Layout from "../layout/Layout"; 
 
 const Reports = () => {
   const [reportData, setReportData] = useState(null);
@@ -12,12 +12,12 @@ const Reports = () => {
         const response = await axios.post(
           "http://localhost:8080/login?username=manager&password=manager"
         );
-        console.log("Login Response:", response); // Добавьте эту строку
-        const token = response.data; // Изменено
-        console.log("Token:", token); // Добавьте эту строку
+        console.log("Login Response:", response); 
+        const token = response.data;
+        console.log("Token:", token); 
 
         const reportResponse = await axios.get("http://localhost:8080/report", {
-        params: { "token": token }, // Пробуйте явно указать ключ "token"
+        params: { "token": token }, 
         });
 
         const data = reportResponse.data;
