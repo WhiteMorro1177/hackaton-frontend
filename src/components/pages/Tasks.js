@@ -11,15 +11,15 @@ const Tasks = () => {
       console.log("Начало выполнения assign...");
   
       // Выполнение assign с использованием метода GET
-      await axios.get('http://localhost:8080/tasks/assign');
+      await axios.get('http://localhost:8081/tasks/assign');
       console.log("Assign выполнен успешно.");
   
       // Получение данных через status после assign
       const loginResponse = await axios.post(
-        "http://localhost:8080/login?username=manager&password=manager"
+        "http://localhost:8081/login?username=manager&password=manager"
       );
       const token = loginResponse.data;
-      const statusResponse = await axios.get("http://localhost:8080/tasks/status",{
+      const statusResponse = await axios.get("http://localhost:8081/tasks/status",{
         params: { token },
       });
       console.log("Данные получены успешно:", statusResponse.data);
@@ -36,12 +36,12 @@ const Tasks = () => {
       console.log("Начало получения задач в режиме view...");
   
       const loginResponse = await axios.post(
-        "http://localhost:8080/login?username=manager&password=manager"
+        "http://localhost:8081/login?username=manager&password=manager"
       );
       const token = loginResponse.data;
   
       // Запрос данных в режиме view
-      const response = await axios.get(`http://localhost:8080/tasks/data`, {
+      const response = await axios.get(`http://localhost:8081/tasks/data`, {
         params: { token },
       });
       console.log("Данные получены успешно:", response.data);

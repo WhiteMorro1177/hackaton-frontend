@@ -10,13 +10,13 @@ const Reports = () => {
     const login = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:8080/login?username=manager&password=manager"
+          "http://localhost:8081/login?username=manager&password=manager"
         );
         console.log("Login Response:", response); 
         const token = response.data;
         console.log("Token:", token); 
 
-        const reportResponse = await axios.get("http://localhost:8080/report", {
+        const reportResponse = await axios.get("http://localhost:8081/report", {
         params: { "token": token }, 
         });
 

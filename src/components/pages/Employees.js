@@ -11,11 +11,11 @@ const Employees = () => {
     const login = async () => {
       try {
         const loginResponse = await axios.post(
-          "http://localhost:8080/login?username=manager&password=manager"
+          "http://localhost:8081/login?username=manager&password=manager"
         );
         const token = loginResponse.data;
 
-        const response = await axios.get("http://localhost:8080/employees", {
+        const response = await axios.get("http://localhost:8081/employees", {
           params: { token },
         });
         setEmployees(response.data);
