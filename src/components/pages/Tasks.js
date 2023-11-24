@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "../layout/Layout";
+import "./Tasks.css"
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
