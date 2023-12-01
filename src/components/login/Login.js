@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { logIn } from "../../http/sender";
+
 import "./Login.css";
 
 const Login = () => {
@@ -11,9 +13,20 @@ const Login = () => {
 
   function handleSubmit(event) {
     // send request here
+    let token = null;
+    logIn(inputUsername, inputPassword)
+    .then(response => {
+      token = response.data;
+    });
 
-    localStorage.setItem("username", inputUsername);
-    navigate("/tasks");
+    if (token == null) {
+      alert("Invalid Credentials");
+    }
+    else {
+      alert(token);
+      localStorage.setItem("token", token);
+      navigate("/tasks");
+    }
   }
 
   return (

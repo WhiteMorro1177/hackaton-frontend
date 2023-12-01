@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import Layout from "../layout/Layout";
 import "./Tasks.css"
+
+import { getData, assignTasks } from "../../http/sender";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -12,17 +13,11 @@ const Tasks = () => {
       console.log("Начало выполнения assign...");
   
       // Выполнение assign с использованием метода GET
-      await axios.get('http://localhost:8081/tasks/assign');
+      await assignTasks("/tasks/assign");
       console.log("Assign выполнен успешно.");
   
-      // Получение данных через status после assign
-      const loginResponse = await axios.post(
-        "http://localhost:8081/login?username=manager&password=manager"
-      );
-      const token = loginResponse.data;
-      const statusResponse = await axios.get("http://localhost:8081/tasks/status",{
-        params: { token },
-      });
+      const token = localStorage.getItem("token");
+      const statusResponse = await getData("/tasks/status", token);
       console.log("Данные получены успешно:", statusResponse.data);
   
       setTasks(statusResponse.data);
@@ -36,15 +31,10 @@ const Tasks = () => {
     try {
       console.log("Начало получения задач в режиме view...");
   
-      const loginResponse = await axios.post(
-        "http://localhost:8081/login?username=manager&password=manager"
-      );
-      const token = loginResponse.data;
-  
       // Запрос данных в режиме view
-      const response = await axios.get(`http://localhost:8081/tasks/data`, {
-        params: { token },
-      });
+
+      const token = localStorage.getItem("token");
+      const response = await getData("/tasks/data", token)
       console.log("Данные получены успешно:", response.data);
   
       setTasks(response.data);
