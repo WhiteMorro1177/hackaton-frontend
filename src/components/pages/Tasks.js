@@ -8,33 +8,46 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
 
+  const { host, port } = require("../../helper/info.json");
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      // Проверка наличия токена в localStorage
+      const token = localStorage.getItem("token");
+
+      // Если токен отсутствует, перенаправляем пользователя на страницу входа
+      if (!token) {
+        navigate("/");
+        return;
+      }
+    }
+    checkLogin();
+  } , [navigate]);
   const handleAssign = async () => {
     // Проверка наличия токена в localStorage
     const token = localStorage.getItem("token");
-
     // Если токен отсутствует, перенаправляем пользователя на страницу входа
     if (!token) {
       navigate("/");
       return;
     }
-
     try {
       console.log("Начало выполнения assign...");
 
       // Выполнение assign с использованием метода GET
-      await axios.get("http://localhost:8080/tasks/assign", { params: { token } });
+      await axios.get(`${host}:${port}/tasks/assign`, { params: { token } });
       console.log("Assign выполнен успешно.");
 
       // Получение данных через status после assign
-      const statusResponse = await axios.get("http://localhost:8080/tasks/status", {
+      const statusResponse = await axios.get(`${host}:${port}/tasks/status`, {
         params: { token },
       });
       console.log("Данные получены успешно:", statusResponse.data);
 
       setTasks(statusResponse.data);
     } catch (error) {
-      console.error(`Ошибка при выполнении assign или получении задач:`, error.message);
-      setError(`Ошибка при выполнении assign или получении задач`);
+      console.error("Ошибка при выполнении assign или получении задач:", error.message);
+      setError("Ошибка при выполнении assign или получении задач");
     }
   };
 
@@ -52,15 +65,15 @@ const Tasks = () => {
       console.log("Начало получения задач в режиме view...");
 
       // Запрос данных в режиме view
-      const response = await axios.get("http://localhost:8080/tasks/data", {
+      const response = await axios.get(`${host}:${port}/tasks/data`, {
         params: { token },
       });
       console.log("Данные получены успешно:", response.data);
 
       setTasks(response.data);
     } catch (error) {
-      console.error(`Ошибка при получении задач (view):`, error.message);
-      setError(`Ошибка при получении задач (view)`);
+      console.error("Ошибка при получении задач (view):", error.message);
+      setError("Ошибка при получении задач (view)");
     }
   };
 

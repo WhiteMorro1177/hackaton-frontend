@@ -8,6 +8,8 @@ const Reports = () => {
   const [reportData, setReportData] = useState(null);
   const [error, setError] = useState(null);
 
+  const { host, port } = require("../../helper/info.json");
+
   useEffect(() => {
     const checkLogin = async () => {
       // Проверка наличия токена в localStorage
@@ -20,7 +22,7 @@ const Reports = () => {
       }
 
       try {
-        const reportResponse = await axios.get("http://localhost:8080/report", {
+        const reportResponse = await axios.get(`${host}:${port}/report`, {
           params: { token },
         });
 

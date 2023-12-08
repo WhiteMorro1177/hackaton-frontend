@@ -8,6 +8,8 @@ const BusinessPoints = () => {
   const [points, setPoints] = useState([]);
   const [error, setError] = useState(null);
 
+  const { host, port } = require("../../helper/info.json");
+
   useEffect(() => {
     const checkLogin = async () => {
       // Проверка наличия токена в localStorage
@@ -20,7 +22,7 @@ const BusinessPoints = () => {
       }
 
       try {
-        const response = await axios.get("http://localhost:8080/business_points", {
+        const response = await axios.get(`${host}:${port}/business_points`, {
           params: { token },
         });
         setPoints(response.data);

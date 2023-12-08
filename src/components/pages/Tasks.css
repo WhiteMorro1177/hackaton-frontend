@@ -21,3 +21,19 @@ td {
   background-color: cadetblue;
   padding: 10px;
 }
+
+button {
+  margin: 6px;
+  color: white;
+  background-color: #797979;
+  transition-duration: 0.4s;
+}
+
+button:hover {
+  background-color: #363636;
+}
+
+h1,
+p {
+    color: white;
+}

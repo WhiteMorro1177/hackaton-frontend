@@ -8,6 +8,8 @@ const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [error, setError] = useState(null);
 
+  const { host, port } = require("../../helper/info.json");
+
   useEffect(() => {
     const checkLogin = async () => {
       // Проверка наличия токена в localStorage
@@ -20,7 +22,7 @@ const Employees = () => {
       }
 
       try {
-        const response = await axios.get("http://localhost:8080/employees", {
+        const response = await axios.get(`${host}:${port}/employees`, {
           params: { token },
         });
         setEmployees(response.data);

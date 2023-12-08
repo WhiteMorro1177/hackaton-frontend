@@ -8,14 +8,17 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
+  const { host, port } = require("../../helper/info.json");
+
+  localStorage.removeItem("token");
   const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.removeItem("token");
     try {
       console.log("Attempting login with username:", username, "and password:", password);
 
-      const loginResponse = await axios.post("http://localhost:8080/login", null, {
+      const loginResponse = await axios.post(`${host}:${port}/login`, null, {
         params: {
           username,
           password,
@@ -35,6 +38,7 @@ const Login = () => {
       localStorage.removeItem("token");
       console.error("Login failed:", error);
       // Handle login error, show a message, or redirect to an error page
+      setError("Incorrect login");
     }
   };
 
@@ -60,6 +64,7 @@ const Login = () => {
         <button className="login-button" type="submit">
           Login
         </button>
+        {error && <p className="error-message">{error}</p>}
       </form>
     </div>
   );
